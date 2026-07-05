@@ -153,7 +153,7 @@ jobs:
 
           LLM_OPENAI_PROTOCOL: ${{ vars.LLM_OPENAI_PROTOCOL || secrets.LLM_OPENAI_PROTOCOL }}
           LLM_OPENAI_BASE_URL: ${{ vars.LLM_OPENAI_BASE_URL || secrets.LLM_OPENAI_BASE_URL }}
-          rm LLM_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LLM_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LLM_OPENAI_API_KEYS: ${{ secrets.OPENAI_API_KEYS }}
           LLM_OPENAI_MODELS: ${{ vars.LLM_OPENAI_MODELS || secrets.LLM_OPENAI_MODELS }}
           LLM_OPENAI_ENABLED: ${{ vars.LLM_OPENAI_ENABLED || secrets.LLM_OPENAI_ENABLED }}
@@ -169,7 +169,7 @@ jobs:
 
           LLM_MOONSHOT_PROTOCOL: ${{ vars.LLM_MOONSHOT_PROTOCOL || secrets.LLM_MOONSHOT_PROTOCOL }}
           LLM_MOONSHOT_BASE_URL: ${{ vars.LLM_MOONSHOT_BASE_URL || secrets.LLM_MOONSHOT_BASE_URL }}
-          LLM_MOONSHOT_API_KEY: ${{ secrets.MAIL_USERNAME }}
+          LLM_MOONSHOT_API_KEY: ${{ secrets.LLM_MOONSHOT_API_KEY }}
           LLM_MOONSHOT_API_KEYS: ${{ secrets.MOONSHOT_API_KEYS }}
           LLM_MOONSHOT_MODELS: ${{ vars.LLM_MOONSHOT_MODELS || secrets.LLM_MOONSHOT_MODELS }}
           LLM_MOONSHOT_ENABLED: ${{ vars.LLM_MOONSHOT_ENABLED || secrets.LLM_MOONSHOT_ENABLED }}
@@ -415,6 +415,6 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: "🚀 专属量化推演：AI 投资日报"
           to: 39724867@qq.com
-          from: "AI 盯盘助手 <${{ secrets.MAIL_USERNAME }}>"
+          from: ${{ secrets.MAIL_USERNAME }}
           convert_markdown: true
           html_body: file://reports/daily_report_*.md
