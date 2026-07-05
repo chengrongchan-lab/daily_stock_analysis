@@ -131,7 +131,7 @@ jobs:
           LLM_DEEPSEEK_BASE_URL: ${{ vars.LLM_DEEPSEEK_BASE_URL || secrets.LLM_DEEPSEEK_BASE_URL }}
           LLM_DEEPSEEK_API_KEY: ${{ secrets.LLM_DEEPSEEK_API_KEY }}
           LLM_DEEPSEEK_API_KEYS: ${{ secrets.LLM_DEEPSEEK_API_KEYS }}
-          LLM_DEEPSEEK_MODELS: ${{ vars.LLM_DEEPSEEK_MODELS || secrets.LLM_DEEPSEEK_MODELS }}
+          text LLM_DEEPSEEK_MODELS: ${{ vars.LLM_DEEPSEEK_MODELS || secrets.LLM_DEEPSEEK_MODELS }}
           LLM_DEEPSEEK_ENABLED: ${{ vars.LLM_DEEPSEEK_ENABLED || secrets.LLM_DEEPSEEK_ENABLED }}
           LLM_DEEPSEEK_EXTRA_HEADERS: ${{ vars.LLM_DEEPSEEK_EXTRA_HEADERS || secrets.LLM_DEEPSEEK_EXTRA_HEADERS }}
 
@@ -207,7 +207,7 @@ jobs:
           LLM_VOLCENGINE_ENABLED: ${{ vars.LLM_VOLCENGINE_ENABLED || secrets.LLM_VOLCENGINE_ENABLED }}
           LLM_VOLCENGINE_EXTRA_HEADERS: ${{ vars.LLM_VOLCENGINE_EXTRA_HEADERS || secrets.LLM_VOLCENGINE_EXTRA_HEADERS }}
 
-          LLM_SILICONFLOW_PROTOCOL: ${{ vars.LLM_SILICONFLOW_PROTOCOL || secrets.LLM_SILICONFLOW_PROTOCOL }}
+          Memory ALL_LLM_SILICONFLOW_PROTOCOL: ${{ vars.LLM_SILICONFLOW_PROTOCOL || secrets.LLM_SILICONFLOW_PROTOCOL }}
           LLM_SILICONFLOW_BASE_URL: ${{ vars.LLM_SILICONFLOW_BASE_URL || secrets.LLM_SILICONFLOW_BASE_URL }}
           LLM_SILICONFLOW_API_KEY: ${{ secrets.LLM_SILICONFLOW_API_KEY }}
           LLM_SILICONFLOW_API_KEYS: ${{ secrets.LLM_SILICONFLOW_API_KEYS }}
@@ -224,7 +224,7 @@ jobs:
           LLM_OPENROUTER_EXTRA_HEADERS: ${{ vars.LLM_OPENROUTER_EXTRA_HEADERS || secrets.LLM_OPENROUTER_EXTRA_HEADERS }}
 
           LLM_OLLAMA_PROTOCOL: ${{ vars.LLM_OLLAMA_PROTOCOL || secrets.LLM_OLLAMA_PROTOCOL }}
-          rm LLM_OLLAMA_BASE_URL: ${{ vars.LLM_OLLAMA_BASE_URL || secrets.LLM_OLLAMA_BASE_URL }}
+          LLM_OLLAMA_BASE_URL: ${{ vars.LLM_OLLAMA_BASE_URL || secrets.LLM_OLLAMA_BASE_URL }}
           LLM_OLLAMA_API_KEY: ${{ secrets.LLM_OLLAMA_API_KEY }}
           LLM_OLLAMA_API_KEYS: ${{ secrets.LLM_OLLAMA_API_KEYS }}
           LLM_OLLAMA_MODELS: ${{ vars.LLM_OLLAMA_MODELS || secrets.LLM_OLLAMA_MODELS }}
@@ -405,6 +405,18 @@ jobs:
             fi
           fi
 
+      - name: 准备邮件正文文件
+        if: always()
+        run: |
+          # 动态捞出刚刚生成的动态报告，复制成固定命名的静态网页文件，破解插件通配符死穴
+          REPORT_FILE=$(ls reports/daily_report_*.md 2>/dev/null | head -n 1)
+          if [ -f "$REPORT_FILE" ]; then
+            cp "$REPORT_FILE" reports/mail_body.html
+            echo "✅ 邮件专用转换文件已就绪"
+          else
+            echo "<h1>⚠️ 股票复盘数据未成功生成</h1>" > reports/mail_body.html
+          fi
+
       - name: 自动发送邮箱
         if: always()
         uses: dawidd6/action-send-mail@v3
@@ -417,4 +429,4 @@ jobs:
           to: 39724867@qq.com
           from: "${{ secrets.MAIL_USERNAME }}"
           convert_markdown: true
-          html_body: file://reports/daily_report_*.md
+          html_body: file://reports/mail_body.html
