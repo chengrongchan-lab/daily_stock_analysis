@@ -1,26 +1,20 @@
 {
   "portfolio": [
     "MDA.TO",
-    "AAOI",
     "ASTS",
+    "AAOI",
+    "SOUN",
     "RXRX",
-    "NVDA",
-    "AVGO",
-    "GOOGL",
-    "META",
-    "TSLA",
-    "CRCL"
+    "VEEV",
+    "SMR",
+    "SPCX",
+    "TSLA"
   ],
   "watchlist": [
     "MRVL",
+    "CLS",
+    "CEG",
     "AMD",
-    "COHR",
-    "LITE",
-    "KXS.TO",
-    "CSU.TO",
-    "DSG.TO",
-    "SHOP.TO",
-    "ENB.TO",
-    "CNQ.TO"
+    "INTC"
   ]
 }
