@@ -82,7 +82,7 @@ def ai_summary(results):
     if not key or genai is None:
         return "未启用 Gemini：请在 GitHub Secrets 添加 GEMINI_API_KEY。"
     genai.configure(api_key=key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-2.5-flash")
     prompt = f"""
 你是用户的加拿大/美股 AI 投资研究助手。请基于以下结构化数据生成中文日报。
 要求：
