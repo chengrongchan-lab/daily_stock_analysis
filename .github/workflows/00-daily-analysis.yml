@@ -427,3 +427,21 @@ jobs:
           else
             echo "⚪ 未配置 Telegram，跳过"
           fi
+          - name: 📧 自动发送 AI 投资日报到邮箱
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          # SMTP 服务器配置（这里以网易 163 邮箱为例）
+          server_address: smtp.163.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          
+          # 邮件基本信息配置
+          subject: "🚀 专属量化推演：AI 投资日报"
+          to: 39724867@qq.com  # 👈 ！！把这里改成你用来收信的真实邮箱！！
+          from: "AI 盯盘助手 <${{ secrets.MAIL_USERNAME }}>"
+          
+          # 告诉系统直接把生成的 .md 文件当成邮件正文发出去，绝对不烂尾
+          convert_markdown: true
+          file_bearing_body: reports/daily_report_*.md
