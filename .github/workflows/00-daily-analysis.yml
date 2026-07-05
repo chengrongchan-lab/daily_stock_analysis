@@ -153,24 +153,24 @@ jobs:
 
           LLM_OPENAI_PROTOCOL: ${{ vars.LLM_OPENAI_PROTOCOL || secrets.LLM_OPENAI_PROTOCOL }}
           LLM_OPENAI_BASE_URL: ${{ vars.LLM_OPENAI_BASE_URL || secrets.LLM_OPENAI_BASE_URL }}
-          LLM_OPENAI_API_KEY: ${{ secrets.LLM_OPENAI_API_KEY }}
-          LLM_OPENAI_API_KEYS: ${{ secrets.LLM_OPENAI_API_KEYS }}
+          rm LLM_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LLM_OPENAI_API_KEYS: ${{ secrets.OPENAI_API_KEYS }}
           LLM_OPENAI_MODELS: ${{ vars.LLM_OPENAI_MODELS || secrets.LLM_OPENAI_MODELS }}
           LLM_OPENAI_ENABLED: ${{ vars.LLM_OPENAI_ENABLED || secrets.LLM_OPENAI_ENABLED }}
           LLM_OPENAI_EXTRA_HEADERS: ${{ vars.LLM_OPENAI_EXTRA_HEADERS || secrets.LLM_OPENAI_EXTRA_HEADERS }}
 
           LLM_ANTHROPIC_PROTOCOL: ${{ vars.LLM_ANTHROPIC_PROTOCOL || secrets.LLM_ANTHROPIC_PROTOCOL }}
           LLM_ANTHROPIC_BASE_URL: ${{ vars.LLM_ANTHROPIC_BASE_URL || secrets.LLM_ANTHROPIC_BASE_URL }}
-          LLM_ANTHROPIC_API_KEY: ${{ secrets.LLM_ANTHROPIC_API_KEY }}
-          LLM_ANTHROPIC_API_KEYS: ${{ secrets.LLM_ANTHROPIC_API_KEYS }}
+          LLM_ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_ANTHROPIC_API_KEYS: ${{ secrets.ANTHROPIC_API_KEYS }}
           LLM_ANTHROPIC_MODELS: ${{ vars.LLM_ANTHROPIC_MODELS || secrets.LLM_ANTHROPIC_MODELS }}
           LLM_ANTHROPIC_ENABLED: ${{ vars.LLM_ANTHROPIC_ENABLED || secrets.LLM_ANTHROPIC_ENABLED }}
           LLM_ANTHROPIC_EXTRA_HEADERS: ${{ vars.LLM_ANTHROPIC_EXTRA_HEADERS || secrets.LLM_ANTHROPIC_EXTRA_HEADERS }}
 
           LLM_MOONSHOT_PROTOCOL: ${{ vars.LLM_MOONSHOT_PROTOCOL || secrets.LLM_MOONSHOT_PROTOCOL }}
           LLM_MOONSHOT_BASE_URL: ${{ vars.LLM_MOONSHOT_BASE_URL || secrets.LLM_MOONSHOT_BASE_URL }}
-          LLM_MOONSHOT_API_KEY: ${{ secrets.LLM_MOONSHOT_API_KEY }}
-          LLM_MOONSHOT_API_KEYS: ${{ secrets.LLM_MOONSHOT_API_KEYS }}
+          LLM_MOONSHOT_API_KEY: ${{ secrets.MAIL_USERNAME }}
+          LLM_MOONSHOT_API_KEYS: ${{ secrets.MOONSHOT_API_KEYS }}
           LLM_MOONSHOT_MODELS: ${{ vars.LLM_MOONSHOT_MODELS || secrets.LLM_MOONSHOT_MODELS }}
           LLM_MOONSHOT_ENABLED: ${{ vars.LLM_MOONSHOT_ENABLED || secrets.LLM_MOONSHOT_ENABLED }}
           LLM_MOONSHOT_EXTRA_HEADERS: ${{ vars.LLM_MOONSHOT_EXTRA_HEADERS || secrets.LLM_MOONSHOT_EXTRA_HEADERS }}
@@ -364,7 +364,7 @@ jobs:
             logs/
           retention-days: 30
       
-      - name: 显示运行 Comedy 结果
+      - name: 显示运行结果
         if: always()
         run: |
           if [ -d "reports" ] && [ "$(ls -A reports 2>/dev/null)" ]; then
@@ -409,7 +409,7 @@ jobs:
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.163.com
+          server_address: smtp.qq.com
           server_port: 465
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
@@ -417,4 +417,4 @@ jobs:
           to: 39724867@qq.com
           from: "AI 盯盘助手 <${{ secrets.MAIL_USERNAME }}>"
           convert_markdown: true
-          file_bearing_body: reports/daily_report_*.md
+          html_body: file://reports/daily_report_*.md
