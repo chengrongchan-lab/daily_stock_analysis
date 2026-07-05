@@ -1,11 +1,8 @@
 name: 每日股票分析
 
 on:
-  # 定时触发 - 每天北京时间 18:00 (UTC 10:00)
   schedule:
-    - cron: '0 10 * * 1-5'     # 周一到周五，UTC 10:00 = 北京时间 18:00
-  
-  # 手动触发
+    - cron: '0 10 * * 1-5'
   workflow_dispatch:
     inputs:
       mode:
@@ -14,16 +11,15 @@ on:
         default: 'full'
         type: choice
         options:
-          - full          # 完整分析（股票+大盘）
-          - market-only   # 仅大盘复盘
-          - stocks-only   # 仅股票分析
+          - full
+          - market-only
+          - stocks-only
       force_run:
         description: '强制运行（跳过交易日检查）'
         required: false
         default: false
         type: boolean
 
-# 并发控制：同一时间只运行一个分析任务
 concurrency:
   group: stock-analysis
   cancel-in-progress: false
@@ -32,10 +28,10 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     environment: STOCK_LIST
-    timeout-minutes: ${{ fromJSON(vars.ANALYSIS_TIMEOUT_MINUTES || '30') }}
+    timeout-minutes: 30
     
     steps:
-      - name: 随机延迟（避免固定时间访问）
+      - name: 随机延迟
         run: sleep $((RANDOM % 60))
       
       - name: 检出代码
@@ -183,7 +179,7 @@ jobs:
           LLM_DASHSCOPE_BASE_URL: ${{ vars.LLM_DASHSCOPE_BASE_URL || secrets.LLM_DASHSCOPE_BASE_URL }}
           LLM_DASHSCOPE_API_KEY: ${{ secrets.LLM_DASHSCOPE_API_KEY }}
           LLM_DASHSCOPE_API_KEYS: ${{ secrets.LLM_DASHSCOPE_API_KEYS }}
-          text LLM_DASHSCOPE_MODELS: ${{ vars.LLM_DASHSCOPE_MODELS || secrets.LLM_DASHSCOPE_MODELS }}
+          LLM_DASHSCOPE_MODELS: ${{ vars.LLM_DASHSCOPE_MODELS || secrets.LLM_DASHSCOPE_MODELS }}
           LLM_DASHSCOPE_ENABLED: ${{ vars.LLM_DASHSCOPE_ENABLED || secrets.LLM_DASHSCOPE_ENABLED }}
           LLM_DASHSCOPE_EXTRA_HEADERS: ${{ vars.LLM_DASHSCOPE_EXTRA_HEADERS || secrets.LLM_DASHSCOPE_EXTRA_HEADERS }}
 
@@ -345,18 +341,9 @@ jobs:
           fi
 
           MODE="${{ github.event.inputs.mode || 'full' }}"
-          
-          echo "=========================================="
-          echo "🚀 A股自选股智能分析系统"
-          echo "=========================================="
-          echo "🎯 运行模式: $MODE"
-          echo "📊 自选股: $STOCK_LIST"
-          echo ""
-
           FORCE_RUN_ARG=""
           if [ "${{ github.event.inputs.force_run }}" = "true" ]; then
             FORCE_RUN_ARG="--force-run"
-            echo "⚡ 已启用强制运行模式"
           fi
 
           if [ "$MODE" = "market-only" ]; then
@@ -377,14 +364,10 @@ jobs:
             logs/
           retention-days: 30
       
-      - name: 显示运行结果
+      - name: 显示运行 Comedy 结果
         if: always()
         run: |
-          echo "=========================================="
-          echo "📊 分析完成"
-          echo "=========================================="
           if [ -d "reports" ] && [ "$(ls -A reports 2>/dev/null)" ]; then
-            echo "生成的报告:"
             ls -la reports/
           else
             echo "⚠️ 未生成报告文件"
@@ -403,10 +386,7 @@ jobs:
               curl -s -X POST "$WECHAT_WEBHOOK_URL" \
                 -H "Content-Type: application/json" \
                 -d "{\"msgtype\":\"markdown\",\"markdown\":{\"content\":$JSON_TEXT}}"
-              echo "✅ 企业微信备份发送动作已执行"
             fi
-          else
-            echo "⚪ 未配置企业微信 Webhook，跳过"
           fi
 
       - name: 推送到 Telegram
@@ -422,13 +402,10 @@ jobs:
               curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
                 -d "chat_id=${TELEGRAM_CHAT_ID}" \
                 --data-urlencode "text=${REPORT_TEXT}"
-              echo "✅ Telegram 备份发送动作已执行"
             fi
-          else
-            echo "⚪ 未配置 Telegram，跳过"
           fi
 
-      - name: 📧 自动发送 AI 投资日报到邮箱
+      - name: 自动发送邮箱
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
